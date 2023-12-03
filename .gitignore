@@ -1,0 +1,18 @@
+# Node
+node_modules/
+dist/
+.env
+# Python
+__pycache__/
+.venv/
+# OS
+.DS_Store
+# Secrets
+.github/
+# Local
+logs/
+temp/
+# MUST NEVER COMMIT
+github_accounts.csv
+project_description.txt
+temp.txt

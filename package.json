@@ -1,0 +1,8 @@
+{
+  "name": "agatha",
+  "private": true,
+  "workspaces": ["backend", "apps/*"],
+  "scripts": {
+    "bootstrap": "npm --version"
+  }
+}

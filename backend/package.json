@@ -1,0 +1,13 @@
+{
+  "name": "agatha-backend",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --version"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}

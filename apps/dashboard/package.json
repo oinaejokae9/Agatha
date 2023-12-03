@@ -1,0 +1,7 @@
+{
+  "name": "dashboard",
+  "private": true,
+  "scripts": {
+    "dev": "echo dev"
+  }
+}
