@@ -1,83 +1,58 @@
-export type Task = { id: string; run: () => Promise<void> };
+export type TaskResult<T> = { ok: true; value: T } | { ok: false; error: Error };
+
+export type Task<T> = {
+  id: string;
+  run: () => Promise<T>;
+  retries?: number;
+  retryDelayMs?: number;
+};
+
 export class Pipeline {
-  private tasks: Task[] = [];
-  add(task: Task) { this.tasks.push(task); }
-  async runAll() { for (const t of this.tasks) { await t.run(); } }
+  private tasks: Task<unknown>[] = [];
+  private concurrency: number;
+
+  constructor(concurrency: number = 2) {
+    this.concurrency = Math.max(1, concurrency);
+  }
+
+  add<T>(task: Task<T>): void {
+    this.tasks.push(task);
+  }
+
+  async runAll(): Promise<TaskResult<unknown>[]> {
+    const results: TaskResult<unknown>[] = [];
+    const queue = [...this.tasks];
+
+    const workers: Promise<void>[] = [];
+    for (let i = 0; i < this.concurrency; i++) {
+      workers.push(
+        (async () => {
+          while (queue.length > 0) {
+            const task = queue.shift();
+            if (!task) break;
+            const { run, retries = 0, retryDelayMs = 200 } = task;
+            let attempts = 0;
+            while (true) {
+              try {
+                const value = await run();
+                results.push({ ok: true, value });
+                break;
+              } catch (err) {
+                if (attempts < retries) {
+                  attempts += 1;
+                  await new Promise((r) => setTimeout(r, retryDelayMs));
+                  continue;
+                }
+                results.push({ ok: false, error: err as Error });
+                break;
+              }
+            }
+          }
+        })()
+      );
+    }
+
+    await Promise.all(workers);
+    return results;
+  }
 }
-// step 0
-// refine step 1
-// refine step 2
-// refine step 3
-// refine step 4
-// refine step 5
-// refine step 6
-// refine step 7
-// refine step 8
-// refine step 9
-// refine step 10
-// refine step 11
-// refine step 12
-// refine step 13
-// refine step 14
-// refine step 15
-// refine step 16
-// refine step 17
-// refine step 18
-// refine step 19
-// refine step 20
-// refine step 21
-// refine step 22
-// refine step 23
-// refine step 24
-// refine step 25
-// refine step 26
-// refine step 27
-// refine step 28
-// refine step 29
-// refine step 30
-// refine step 31
-// refine step 32
-// refine step 33
-// refine step 34
-// refine step 35
-// refine step 36
-// refine step 37
-// refine step 38
-// refine step 39
-// refine step 40
-// refine step 41
-// refine step 42
-// refine step 43
-// refine step 44
-// refine step 45
-// refine step 46
-// refine step 47
-// refine step 48
-// refine step 49
-// refine step 50
-// refine step 51
-// refine step 52
-// refine step 53
-// refine step 54
-// refine step 55
-// refine step 56
-// refine step 57
-// refine step 58
-// refine step 59
-// refine step 60
-// refine step 61
-// refine step 62
-// refine step 63
-// refine step 64
-// refine step 65
-// refine step 66
-// refine step 67
-// refine step 68
-// refine step 69
-// refine step 70
-// refine step 71
-// refine step 72
-// refine step 73
-// refine step 74
-// refine step 75
-// refine step 76
