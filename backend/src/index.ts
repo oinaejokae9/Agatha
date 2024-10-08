@@ -37,3 +37,5 @@ export const minor_109 = () => 109;
 export const minor_111 = () => 111;
 
 export const minor_113 = () => 113;
+
+export const minor_115 = () => 115;
